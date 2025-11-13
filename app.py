@@ -5,7 +5,11 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import io
-import joblib
+try:
+    import joblib
+except Exception:
+    joblib = None
+    st.warning("`joblib` not installed. Model save/load features will be disabled. Add `joblib` to requirements.txt and redeploy.")
 import plotly.express as px
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split, GridSearchCV, cross_val_score
@@ -195,4 +199,4 @@ if batch is not None:
     model = joblib.load("model.pkl")
     batch_df["prediction"] = model.predict(batch_df[selected_features])
     st.dataframe(batch_df.head())
-   
+    st.download_button("Download Predictions CSV", batch_df.to_csv(index=False), file_name="predictions.csv"), "predictions.csv")
